@@ -7,7 +7,7 @@ from docx import Document
 from docx.shared import Pt
 from flask_pymongo import PyMongo
 
- 
+
 UPLOAD_FOLDER = 'upload/'
 
 app = Flask(__name__)
@@ -16,7 +16,7 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MONGO_URI'] = "mongodb://localhost:27017/myDatabase"
 
-dbtests = PyMongo(app)
+mongo = PyMongo(app)
 
 def allowed_doc(filename):
     return '.' in filename and \
@@ -55,10 +55,8 @@ def upload_db():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
             for x in range(int(numClasses)):
-                print("////////////HERE\\\\\\\\\\\\\\\\")
-                doc_to_final(file.filename, nameTest, x, file)
-                print("////////////HERE\\\\\\\\\\\\\\\\")
-                
+                doc_to_final(file.filename, nameTest, x)
+
             return render_template('dbupload.html',
                                    msg='Successfully processed', doc_src='static/' + nameTest + '.docx')
            # return redirect(url_for('upload_file()'))
@@ -216,7 +214,7 @@ def parse_document(filename):
     return parse_test(test_string[:-1])
 
 
-def doc_to_final(filename, test_name, index, file):
+def doc_to_final(filename, test_name, index):
     letter_list = ['A', 'B', 'C', 'D', 'E', 'F',
                    'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O']
     original_test = parse_document(filename)
@@ -258,10 +256,7 @@ def doc_to_final(filename, test_name, index, file):
     for num in range(len(answer_key_list)):
         document.add_paragraph(str(num + 1) + ". " + answer_key_list[num])
 
-    #document.save('DB/' + test_name + 'class' + str(index+1) + '.docx')
-    dbtests.save_file(test_name + 'class' + str(index+1) + '.docx', file)
-    dbtests.db.users.insert({'unit' : filename, 'filename' : test_name + 'class' + str(index+1) + '.docx'})
-
+    document.save('DB/' + test_name + 'class' + str(index+1) + '.docx')
 
 def doc_to_doc(filename, num_copies, test_name):
 
@@ -308,5 +303,5 @@ def doc_to_doc(filename, num_copies, test_name):
 
         document.add_page_break()
 
-   # document.save('static/' + test_name + '.docx')
+    document.save('static/' + test_name + '.docx')
 # mongo.save_file(test_name + '.docx',)
