@@ -35,6 +35,34 @@ def home_page():
 
 # @app.route('/testbank')
 # def bank():
+@app.route('/uploaddb', methods=['GET', 'POST'])
+def upload_db():
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            return render_template('dbupload.html', msg='No file selected')
+        file = request.files['file']
+        # if user does not select file, browser also
+        # submit an empty part without filename
+        if file.filename == '':
+            return render_template('dbupload.html', msg='No file selected')
+
+        # if it is a doc
+        numClasses= request.form["num_classes"]
+        nameTest = request.form["test_title"]
+        if file and allowed_doc(file.filename) and numClasses and nameTest:
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+            for x in range(int(numClasses)):
+                doc_to_final(file.filename, nameTest, x)
+
+            return render_template('dbupload.html',
+                                   msg='Successfully processed', doc_src='static/' + nameTest + '.docx')
+           # return redirect(url_for('upload_file()'))
+
+    return render_template("dbupload.html")
+
 
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -186,7 +214,7 @@ def parse_document(filename):
     return parse_test(test_string[:-1])
 
 
-def doc_to_final(filename, test_name):
+def doc_to_final(filename, test_name, index):
     letter_list = ['A', 'B', 'C', 'D', 'E', 'F',
                    'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O']
     original_test = parse_document(filename)
@@ -228,7 +256,7 @@ def doc_to_final(filename, test_name):
     for num in range(len(answer_key_list)):
         document.add_paragraph(str(num + 1) + ". " + answer_key_list[num])
 
-    document.save('static/' + test_name + '.docx')
+    document.save('DB/' + test_name + 'period' + str(index+1) + '.docx')
 
 def doc_to_doc(filename, num_copies, test_name):
 
