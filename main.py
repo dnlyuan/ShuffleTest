@@ -229,7 +229,7 @@ def doc_to_final(filename, test_name, index):
 
     
     answer_key_list = []
-    document.add_heading(test_name)
+    document.add_heading(test_name + ' Class ' + str(index+1))
     the_test = randomize_test(original_test)
     current_question = 1
     for mcq in the_test.mcList:
@@ -251,12 +251,12 @@ def doc_to_final(filename, test_name, index):
 
     document.add_page_break()
 
-    document.add_heading(test_name)
+    document.add_heading(test_name + ' Class ' + str(index+1))
 
     for num in range(len(answer_key_list)):
         document.add_paragraph(str(num + 1) + ". " + answer_key_list[num])
 
-    document.save('DB/' + test_name + 'period' + str(index+1) + '.docx')
+    document.save('DB/' + test_name + 'class' + str(index+1) + '.docx')
 
 def doc_to_doc(filename, num_copies, test_name):
 
