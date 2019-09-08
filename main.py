@@ -5,15 +5,18 @@ from flask import Flask, flash, request, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
 from docx import Document
 from docx.shared import Pt
-
+from flask_pymongo import PyMongo
 
 
 UPLOAD_FOLDER = 'upload/'
 
 app = Flask(__name__)
 
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MONGO_URI'] = "mongodb://localhost:27017/myDatabase"
+
+mongo = PyMongo(app)
 
 def allowed_doc(filename):
     return '.' in filename and \
@@ -28,6 +31,10 @@ def allowed_picture(filename):
 @app.route('/')
 def home_page():
     return render_template('index.html')
+
+
+# @app.route('/testbank')
+# def bank():
 
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -53,7 +60,6 @@ def upload_file():
             # return render_template('upload.html',
             #                        msg='Successfully processed', doc_src='static/new' + file.filename)
             return redirect(url_for('upload_file()'))
-
 
     return render_template("upload.html")
 
@@ -226,3 +232,4 @@ def doc_to_doc(filename, num_copies, test_name):
         document.add_page_break()
 
     document.save('static/' + test_name + '.docx')
+    mongo.save_file(test_name + '.docx',)
