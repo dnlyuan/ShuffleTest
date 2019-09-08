@@ -186,6 +186,50 @@ def parse_document(filename):
     return parse_test(test_string[:-1])
 
 
+def doc_to_final(filename, test_name):
+    letter_list = ['A', 'B', 'C', 'D', 'E', 'F',
+                   'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O']
+    original_test = parse_document(filename)
+
+    document = Document()
+
+    print("///////////////////////////////////////////////////////")
+    style = document.styles['Normal']
+    font = style.font
+    font.name = 'Calibri (Body)'
+    font.size = Pt(12)
+
+    
+    answer_key_list = []
+    document.add_heading(test_name)
+    the_test = randomize_test(original_test)
+    current_question = 1
+    for mcq in the_test.mcList:
+        document.add_paragraph(str(current_question) + ". " + mcq.question)
+        current_question += 1
+        current_choice = 0
+        for choice in mcq.choice_list:
+            document.add_paragraph(
+                '\t' + letter_list[current_choice] + '. ' + choice)
+            current_choice += 1
+
+        answer_key_list.append(letter_list[mcq.correct_ans])
+        document.add_paragraph()
+
+    for frq in the_test.frList:
+        document.add_paragraph(str(current_question) + ". " + frq.question)
+        current_question += 1
+        document.add_paragraph()
+
+    document.add_page_break()
+
+    document.add_heading(test_name)
+
+    for num in range(len(answer_key_list)):
+        document.add_paragraph(str(num + 1) + ". " + answer_key_list[num])
+
+    document.save('static/' + test_name + '.docx')
+
 def doc_to_doc(filename, num_copies, test_name):
 
     letter_list = ['A', 'B', 'C', 'D', 'E', 'F',
