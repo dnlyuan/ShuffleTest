@@ -59,11 +59,28 @@ def upload_db():
 
             return render_template('dbupload.html',
                                    msg='Successfully processed', doc_src='static/' + nameTest + '.docx')
-           # return redirect(url_for('upload_file()'))
+            return redirect(url_for('view_tests()'))
 
     return render_template("dbupload.html")
 
+@app.route('/testbank')
+def view_tests():
+    directory = os.fsencode("DB")
+    filelist=[]
+    for file in os.listdir(directory):
+        filename = os.fsdecode(file)
+        newFileName="../DB/" + filename
+        filelist.append(newFileName)
+        print(newFileName)
+    unit = filelist[0]
+    
 
+    return render_template("testbank.html", unit = unit[10], list = filelist)
+
+  
+    
+
+    
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
