@@ -42,11 +42,13 @@ def upload_file():
             return render_template('upload.html', msg='No file selected')
 
         # if it is a doc
-        if file and allowed_doc(file.filename):
+        numTest = request.form["num_copies"]
+        nameTest = request.form["test_title"]
+        if file and allowed_doc(file.filename) and numTest and nameTest:
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-            doc_to_doc(filename, 1, "physics")
+            doc_to_doc(filename, int(numTest), nameTest)
             return render_template('upload.html',
                                    msg='Successfully processed', doc_src='static/new' + file.filename)
 
