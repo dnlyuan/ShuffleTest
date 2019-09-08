@@ -58,7 +58,7 @@ def upload_file():
 
             doc_to_doc(filename, int(numTest), nameTest)
             return render_template('upload.html',
-                                   msg='Successfully processed', doc_src='static/new' + file.filename)
+                                   msg='Successfully processed', doc_src='static/' + file.filename)
            # return redirect(url_for('upload_file()'))
 
     return render_template("upload.html")
