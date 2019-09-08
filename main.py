@@ -1,7 +1,7 @@
 import math
 import random
 import os
-from flask import Flask, flash, request, redirect, url_for, render_template
+from flask import Flask, flash, request, redirect, url_for, render_template, send_file
 from werkzeug.utils import secure_filename
 from docx import Document
 from docx.shared import Pt
@@ -77,9 +77,13 @@ def view_tests():
 
     return render_template("testbank.html", unit = unit[10], list = filelist)
 
-  
-    
 
+    
+@app.route('/DB/<address>', methods = ['GET'])
+def download_file(address):
+    if request.method == 'GET':
+        fileAddress = "DB/" + address
+        return send_file(fileAddress)
     
 
 @app.route('/upload', methods=['GET', 'POST'])
