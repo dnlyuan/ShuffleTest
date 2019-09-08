@@ -57,9 +57,9 @@ def upload_file():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
             doc_to_doc(filename, int(numTest), nameTest)
-            # return render_template('upload.html',
-            #                        msg='Successfully processed', doc_src='static/new' + file.filename)
-            return redirect(url_for('upload_file()'))
+            return render_template('upload.html',
+                                   msg='Successfully processed', doc_src='static/new' + file.filename)
+           # return redirect(url_for('upload_file()'))
 
     return render_template("upload.html")
 
@@ -232,4 +232,4 @@ def doc_to_doc(filename, num_copies, test_name):
         document.add_page_break()
 
     document.save('static/' + test_name + '.docx')
-    mongo.save_file(test_name + '.docx',)
+# mongo.save_file(test_name + '.docx',)
