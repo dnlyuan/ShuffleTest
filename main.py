@@ -3,9 +3,10 @@ import random
 import os
 from flask import Flask, flash, request, redirect, url_for, render_template, send_file
 from werkzeug.utils import secure_filename
+
 from docx import Document
 from docx.shared import Pt
-from flask_pymongo import PyMongo
+
 
 
 UPLOAD_FOLDER = 'upload/'
@@ -13,10 +14,6 @@ UPLOAD_FOLDER = 'upload/'
 app = Flask(__name__)
 
 
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MONGO_URI'] = "mongodb://localhost:27017/myDatabase"
-
-mongo = PyMongo(app)
 
 def allowed_doc(filename):
     return '.' in filename and \
